@@ -27,7 +27,7 @@ const AppSidebar = () => {
             alt="eXp Realty Logo" 
             className="h-7 w-auto" 
           />
-          <span className="text-xl font-bold text-realestate-900">Assistant</span>
+          <span className="text-xl font-bold text-realestate-700">Assistant</span>
         </div>
         <SidebarTrigger>
           <Button variant="ghost" size="icon">
@@ -44,7 +44,7 @@ const AppSidebar = () => {
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
                   <NavLink to="/" className={({ isActive }) => 
-                    isActive ? "bg-realestate-50 text-realestate-700" : "text-gray-700 hover:bg-gray-100"
+                    isActive ? "bg-realestate-700 text-white" : "text-gray-200 hover:bg-gray-700 hover:bg-opacity-50"
                   }>
                     <Home className="h-5 w-5" />
                     <span>Dashboard</span>
@@ -55,7 +55,7 @@ const AppSidebar = () => {
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
                   <NavLink to="/tasks" className={({ isActive }) => 
-                    isActive ? "bg-realestate-50 text-realestate-700" : "text-gray-700 hover:bg-gray-100"
+                    isActive ? "bg-realestate-700 text-white" : "text-gray-200 hover:bg-gray-700 hover:bg-opacity-50"
                   }>
                     <CheckSquare className="h-5 w-5" />
                     <span>Tasks</span>
@@ -66,7 +66,7 @@ const AppSidebar = () => {
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
                   <NavLink to="/calendar" className={({ isActive }) => 
-                    isActive ? "bg-realestate-50 text-realestate-700" : "text-gray-700 hover:bg-gray-100"
+                    isActive ? "bg-realestate-700 text-white" : "text-gray-200 hover:bg-gray-700 hover:bg-opacity-50"
                   }>
                     <CalendarClock className="h-5 w-5" />
                     <span>Calendar</span>
@@ -77,7 +77,7 @@ const AppSidebar = () => {
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
                   <NavLink to="/clients" className={({ isActive }) => 
-                    isActive ? "bg-realestate-50 text-realestate-700" : "text-gray-700 hover:bg-gray-100"
+                    isActive ? "bg-realestate-700 text-white" : "text-gray-200 hover:bg-gray-700 hover:bg-opacity-50"
                   }>
                     <Users className="h-5 w-5" />
                     <span>Clients</span>
@@ -91,8 +91,8 @@ const AppSidebar = () => {
       
       <SidebarFooter className="px-6 py-4 border-t">
         <div className="flex items-center gap-2">
-          <div className="w-10 h-10 rounded-full bg-realestate-100 flex items-center justify-center">
-            <span className="font-medium text-realestate-700">JD</span>
+          <div className="w-10 h-10 rounded-full bg-realestate-700 flex items-center justify-center">
+            <span className="font-medium text-white">JD</span>
           </div>
           <div className="flex flex-col">
             <span className="font-medium text-sm">John Doe</span>

@@ -63,18 +63,24 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
+				// Updated color scheme based on user request
 				realestate: {
-					50: '#f0f9ff',
-					100: '#e0f2fe',
-					200: '#bae6fd',
-					300: '#7dd3fc',
-					400: '#38bdf8',
-					500: '#0ea5e9',
-					600: '#0284c7',
-					700: '#0369a1',
-					800: '#075985',
-					900: '#0c4a6e',
-					950: '#082f49',
+					// Dark Navy
+					950: '#0CF24', 
+					900: '#0CF24',
+					800: '#0CF24',
+					// Brand Royal
+					700: '#1B489B',
+					600: '#1B489B',
+					500: '#1B489B',
+					// Medium shades
+					400: '#386fc5',
+					300: '#5a8ad2',
+					200: '#8caee0',
+					// Dark Grey
+					100: '#58595',
+					// Light Grey
+					50: '#E2EE4',
 				}
 			},
 			borderRadius: {

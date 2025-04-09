@@ -110,7 +110,7 @@ const Index = () => {
                   <span className="text-sm font-medium">New Listings</span>
                   <span className="text-sm text-muted-foreground">2/3</span>
                 </div>
-                <Progress value={66} className="h-2 bg-realestate-100" indicatorClassName="bg-realestate-600" />
+                <Progress value={66} className="h-2 bg-realestate-100" />
               </div>
               
               <div className="space-y-2">
@@ -118,7 +118,7 @@ const Index = () => {
                   <span className="text-sm font-medium">Client Calls</span>
                   <span className="text-sm text-muted-foreground">15/20</span>
                 </div>
-                <Progress value={75} className="h-2 bg-realestate-100" indicatorClassName="bg-realestate-600" />
+                <Progress value={75} className="h-2 bg-realestate-100" />
               </div>
               
               <div className="space-y-2">
@@ -126,7 +126,7 @@ const Index = () => {
                   <span className="text-sm font-medium">Property Showings</span>
                   <span className="text-sm text-muted-foreground">8/10</span>
                 </div>
-                <Progress value={80} className="h-2 bg-realestate-100" indicatorClassName="bg-realestate-600" />
+                <Progress value={80} className="h-2 bg-realestate-100" />
               </div>
             </CardContent>
           </Card>

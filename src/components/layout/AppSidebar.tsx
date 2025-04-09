@@ -25,7 +25,7 @@ const AppSidebar = () => {
           <Building className="h-6 w-6 text-realestate-700" />
           <span className="text-xl font-bold text-realestate-900">eXp Assistant</span>
         </div>
-        <SidebarTrigger asChild>
+        <SidebarTrigger>
           <Button variant="ghost" size="icon">
             <Menu className="h-5 w-5" />
           </Button>

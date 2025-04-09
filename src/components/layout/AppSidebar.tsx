@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { Home, CalendarClock, CheckSquare, Users, Building, Menu } from 'lucide-react';
+import { Home, CalendarClock, CheckSquare, Users, Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Sidebar,
@@ -22,8 +22,12 @@ const AppSidebar = () => {
     <Sidebar>
       <SidebarHeader className="px-6 py-4 border-b">
         <div className="flex items-center gap-2">
-          <Building className="h-6 w-6 text-realestate-700" />
-          <span className="text-xl font-bold text-realestate-900">eXp Assistant</span>
+          <img 
+            src="/lovable-uploads/c5c55197-d6fd-4444-b120-546bf6383ce4.png" 
+            alt="eXp Realty Logo" 
+            className="h-7 w-auto" 
+          />
+          <span className="text-xl font-bold text-realestate-900">Assistant</span>
         </div>
         <SidebarTrigger>
           <Button variant="ghost" size="icon">

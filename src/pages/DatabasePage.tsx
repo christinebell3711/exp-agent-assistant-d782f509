@@ -7,7 +7,9 @@ import { supabase } from '@/integrations/supabase/client';
 import { useQuery } from '@tanstack/react-query';
 
 const fetchTableCounts = async () => {
-  const tables = ['clients', 'properties', 'tasks', 'appointments'];
+  // Define tables as a typed array to ensure we're using valid table names
+  const tables = ['clients', 'properties', 'tasks', 'appointments', 'profiles'] as const;
+  
   const counts = await Promise.all(
     tables.map(async (table) => {
       const { count, error } = await supabase
@@ -46,7 +48,7 @@ const DatabasePage: React.FC = () => {
           <TabsContent value="overview" className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               {isLoading ? (
-                Array(4).fill(0).map((_, i) => (
+                Array(5).fill(0).map((_, i) => (
                   <Card key={i} className="animate-pulse">
                     <CardHeader className="pb-2">
                       <div className="h-4 bg-gray-200 rounded w-1/2"></div>

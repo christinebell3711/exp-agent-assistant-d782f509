@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { Home, CalendarClock, CheckSquare, Users, Menu } from 'lucide-react';
+import { Home, CalendarClock, CheckSquare, Users, Menu, Database } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Sidebar,
@@ -81,6 +81,17 @@ const AppSidebar = () => {
                   }>
                     <Users className="h-5 w-5" />
                     <span>Clients</span>
+                  </NavLink>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <NavLink to="/database" className={({ isActive }) => 
+                    isActive ? "bg-realestate-700 text-white" : "text-gray-200 hover:bg-gray-700 hover:bg-opacity-50"
+                  }>
+                    <Database className="h-5 w-5" />
+                    <span>Database</span>
                   </NavLink>
                 </SidebarMenuButton>
               </SidebarMenuItem>

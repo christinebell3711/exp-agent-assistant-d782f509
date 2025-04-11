@@ -23,7 +23,7 @@ const AppSidebar = () => {
       <SidebarHeader className="px-6 py-4 border-b">
         <div className="flex items-center gap-2">
           <img 
-            src="/lovable-uploads/c5c55197-d6fd-4444-b120-546bf6383ce4.png" 
+            src="/lovable-uploads/3992c810-a229-4a61-a818-d470ed42313d.png" 
             alt="eXp Realty Logo" 
             className="h-7 w-auto" 
           />

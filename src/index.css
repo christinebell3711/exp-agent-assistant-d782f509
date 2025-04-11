@@ -15,14 +15,14 @@
     --popover-foreground: 222.2 84% 4.9%;
 
     /* Updated primary color to Brand Royal */
-    --primary: 215 70% 35%;
+    --primary: 215 55% 36%; /* #1B489B */
     --primary-foreground: 210 40% 98%;
 
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
 
     /* Updated muted colors to use Light Grey */
-    --muted: 220 14% 90%;
+    --muted: 210 9% 89%; /* #E2E4E4 */
     --muted-foreground: 215.4 16.3% 46.9%;
 
     --accent: 210 40% 96.1%;
@@ -32,42 +32,42 @@
     --destructive-foreground: 210 40% 98%;
 
     /* Updated border to Dark Grey */
-    --border: 220 13% 35%;
+    --border: 220 4% 35%; /* #585955 */
     --input: 214.3 31.8% 91.4%;
-    --ring: 215 70% 35%;
+    --ring: 215 55% 36%; /* #1B489B */
 
     --radius: 0.5rem;
 
     /* Updated sidebar colors */
-    --sidebar-background: 220 38% 8%;
-    --sidebar-foreground: 220 14% 90%;
-    --sidebar-primary: 215 70% 35%;
+    --sidebar-background: 212 100% 15%; /* #00CF24 - corrected to Dark Navy #0C2F44 */
+    --sidebar-foreground: 210 9% 89%; /* #E2E4E4 */
+    --sidebar-primary: 215 55% 36%; /* #1B489B */
     --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 215 70% 35%;
+    --sidebar-accent: 215 55% 36%; /* #1B489B */
     --sidebar-accent-foreground: 0 0% 98%;
-    --sidebar-border: 220 13% 35%;
-    --sidebar-ring: 215 70% 35%;
+    --sidebar-border: 220 4% 35%; /* #585955 */
+    --sidebar-ring: 215 55% 36%; /* #1B489B */
   }
 
   .dark {
-    --background: 220 38% 8%;
+    --background: 212 100% 15%; /* #0C2F44 */
     --foreground: 210 40% 98%;
 
-    --card: 220 38% 8%;
+    --card: 212 100% 15%; /* #0C2F44 */
     --card-foreground: 210 40% 98%;
 
-    --popover: 220 38% 8%;
+    --popover: 212 100% 15%; /* #0C2F44 */
     --popover-foreground: 210 40% 98%;
 
     /* Updated primary color to Brand Royal */
-    --primary: 215 70% 35%;
+    --primary: 215 55% 36%; /* #1B489B */
     --primary-foreground: 0 0% 98%;
 
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
 
     /* Dark Grey for muted in dark mode */
-    --muted: 220 13% 35%;
+    --muted: 220 4% 35%; /* #585955 */
     --muted-foreground: 215 20.2% 65.1%;
 
     --accent: 217.2 32.6% 17.5%;
@@ -76,19 +76,19 @@
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 220 13% 35%;
+    --border: 220 4% 35%; /* #585955 */
     --input: 217.2 32.6% 17.5%;
-    --ring: 215 70% 35%;
+    --ring: 215 55% 36%; /* #1B489B */
     
     /* Updated sidebar colors */
-    --sidebar-background: 220 38% 8%;
-    --sidebar-foreground: 220 14% 90%;
-    --sidebar-primary: 215 70% 35%;
+    --sidebar-background: 212 100% 15%; /* #0C2F44 */
+    --sidebar-foreground: 210 9% 89%; /* #E2E4E4 */
+    --sidebar-primary: 215 55% 36%; /* #1B489B */
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 215 70% 35%;
-    --sidebar-accent-foreground: 220 14% 90%;
-    --sidebar-border: 220 13% 35%;
-    --sidebar-ring: 215 70% 35%;
+    --sidebar-accent: 215 55% 36%; /* #1B489B */
+    --sidebar-accent-foreground: 210 9% 89%; /* #E2E4E4 */
+    --sidebar-border: 220 4% 35%; /* #585955 */
+    --sidebar-ring: 215 55% 36%; /* #1B489B */
   }
 }
 
@@ -100,6 +100,31 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Custom utility class for the real estate colors */
+.text-realestate-700 {
+  color: #1B489B;
+}
+
+.bg-realestate-700 {
+  background-color: #1B489B;
+}
+
+.bg-realestate-800 {
+  background-color: #143a7e;
+}
+
+.bg-realestate-50 {
+  background-color: #e6ebf5;
+}
+
+.border-realestate-700 {
+  border-color: #1B489B;
+}
+
+.hover\:bg-realestate-800:hover {
+  background-color: #143a7e;
 }
 
 /* Real Estate app specific styles */

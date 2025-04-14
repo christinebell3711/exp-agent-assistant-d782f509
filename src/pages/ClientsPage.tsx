@@ -332,13 +332,17 @@ const ClientsPage = () => {
                     </div>
                     
                     <div className="flex flex-wrap items-center gap-3 sm:gap-4">
-                      <Button variant="outline" size="sm" className="h-8 gap-1">
-                        <PhoneIcon className="h-3 w-3" />
-                        <span className="hidden md:inline">Call</span>
+                      <Button variant="outline" size="sm" className="h-8 gap-1" asChild>
+                        <a href={`tel:${client.phone.replace(/\D/g, '')}`} title={`Call ${client.name}`}>
+                          <PhoneIcon className="h-3 w-3" />
+                          <span className="hidden md:inline">{client.phone}</span>
+                        </a>
                       </Button>
-                      <Button variant="outline" size="sm" className="h-8 gap-1">
-                        <MailIcon className="h-3 w-3" />
-                        <span className="hidden md:inline">Email</span>
+                      <Button variant="outline" size="sm" className="h-8 gap-1" asChild>
+                        <a href={`mailto:${client.email}`} title={`Email ${client.name}`}>
+                          <MailIcon className="h-3 w-3" />
+                          <span className="hidden md:inline">Email</span>
+                        </a>
                       </Button>
                       <Button 
                         variant="outline" 

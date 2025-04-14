@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import AppLayout from '@/components/layout/AppLayout';
 import { Button } from '@/components/ui/button';
@@ -10,10 +9,12 @@ import {
   CardDescription
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { 
   BuildingIcon,
   HomeIcon, 
+  LinkIcon,
   MailIcon, 
   MapPinIcon, 
   MoreHorizontal, 
@@ -47,7 +48,6 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
 
-// Demo client data
 const clients = [
   {
     id: 1,
@@ -58,6 +58,9 @@ const clients = [
     type: 'Buyer',
     location: 'Chicago, IL',
     status: 'active',
+    propertyLinks: [
+      { id: 1, title: 'Dream Home', url: 'https://example.com/listing/1234' }
+    ]
   },
   {
     id: 2,
@@ -68,6 +71,7 @@ const clients = [
     type: 'Seller',
     location: 'Chicago, IL',
     status: 'active',
+    propertyLinks: []
   },
   {
     id: 3,
@@ -78,6 +82,10 @@ const clients = [
     type: 'Buyer/Seller',
     location: 'Evanston, IL',
     status: 'active',
+    propertyLinks: [
+      { id: 1, title: 'Current Home', url: 'https://example.com/listing/5678' },
+      { id: 2, title: 'Potential Buy', url: 'https://example.com/listing/9101' }
+    ]
   },
   {
     id: 4,
@@ -88,6 +96,7 @@ const clients = [
     type: 'Buyer',
     location: 'Oak Park, IL',
     status: 'dormant',
+    propertyLinks: []
   },
   {
     id: 5,
@@ -98,6 +107,9 @@ const clients = [
     type: 'Seller',
     location: 'Chicago, IL',
     status: 'active',
+    propertyLinks: [
+      { id: 1, title: 'Listing', url: 'https://example.com/listing/1122' }
+    ]
   },
 ];
 
@@ -118,8 +130,10 @@ const ClientsPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [clientType, setClientType] = useState('all');
   const [isAddClientOpen, setIsAddClientOpen] = useState(false);
+  const [selectedClient, setSelectedClient] = useState<any>(null);
+  const [isPropertyLinksOpen, setIsPropertyLinksOpen] = useState(false);
+  const [newPropertyLink, setNewPropertyLink] = useState({ title: '', url: '' });
 
-  // Filter clients based on search and type
   const filteredClients = clients.filter(client => {
     const matchesSearch = client.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          client.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -134,10 +148,56 @@ const ClientsPage = () => {
 
   const handleAddClient = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // Here you would normally make an API call to add the client
-    // For this demo, we'll just show a toast notification
     toast.success("Client added successfully");
     setIsAddClientOpen(false);
+  };
+
+  const handleOpenPropertyLinks = (client: any) => {
+    setSelectedClient(client);
+    setIsPropertyLinksOpen(true);
+  };
+
+  const handleAddPropertyLink = () => {
+    if (!newPropertyLink.title || !newPropertyLink.url) {
+      toast.error("Please provide both a title and URL for the property link");
+      return;
+    }
+
+    if (selectedClient) {
+      const newLink = {
+        id: Date.now(),
+        ...newPropertyLink
+      };
+      
+      const clientIndex = clients.findIndex(c => c.id === selectedClient.id);
+      if (clientIndex >= 0) {
+        clients[clientIndex].propertyLinks = [
+          ...clients[clientIndex].propertyLinks,
+          newLink
+        ];
+      }
+
+      toast.success("Property link added successfully");
+      setNewPropertyLink({ title: '', url: '' });
+    }
+  };
+
+  const handleDeletePropertyLink = (linkId: number) => {
+    if (selectedClient) {
+      const clientIndex = clients.findIndex(c => c.id === selectedClient.id);
+      if (clientIndex >= 0) {
+        clients[clientIndex].propertyLinks = clients[clientIndex].propertyLinks.filter(
+          link => link.id !== linkId
+        );
+        
+        setSelectedClient({
+          ...selectedClient,
+          propertyLinks: clients[clientIndex].propertyLinks
+        });
+      }
+      
+      toast.success("Property link removed");
+    }
   };
 
   return (
@@ -280,9 +340,19 @@ const ClientsPage = () => {
                         <MailIcon className="h-3 w-3" />
                         <span className="hidden md:inline">Email</span>
                       </Button>
-                      <Button variant="outline" size="sm" className="h-8 gap-1">
-                        <HomeIcon className="h-3 w-3" />
-                        <span className="hidden md:inline">Properties</span>
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="h-8 gap-1"
+                        onClick={() => handleOpenPropertyLinks(client)}
+                      >
+                        <LinkIcon className="h-3 w-3" />
+                        <span className="hidden md:inline">Property Links</span>
+                        {client.propertyLinks.length > 0 && (
+                          <Badge variant="secondary" className="ml-1 h-4 px-1">
+                            {client.propertyLinks.length}
+                          </Badge>
+                        )}
                       </Button>
                       
                       <DropdownMenu>
@@ -298,9 +368,9 @@ const ClientsPage = () => {
                             <UserIcon className="h-4 w-4 mr-2" />
                             View Profile
                           </DropdownMenuItem>
-                          <DropdownMenuItem>
-                            <BuildingIcon className="h-4 w-4 mr-2" />
-                            View Properties
+                          <DropdownMenuItem onClick={() => handleOpenPropertyLinks(client)}>
+                            <LinkIcon className="h-4 w-4 mr-2" />
+                            Property Links
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
                           <DropdownMenuItem>Edit Client</DropdownMenuItem>
@@ -321,6 +391,85 @@ const ClientsPage = () => {
           </CardContent>
         </Card>
       </div>
+
+      <Dialog open={isPropertyLinksOpen} onOpenChange={setIsPropertyLinksOpen}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle>Property Links for {selectedClient?.name}</DialogTitle>
+            <DialogDescription>
+              Manage property links for this client. Add URLs to property listings or relevant real estate websites.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-1 gap-2">
+              <Label htmlFor="linkTitle">Link Title</Label>
+              <Input 
+                id="linkTitle" 
+                placeholder="e.g., Dream Home or MLS Listing #123" 
+                value={newPropertyLink.title}
+                onChange={(e) => setNewPropertyLink({...newPropertyLink, title: e.target.value})}
+              />
+            </div>
+            <div className="grid grid-cols-1 gap-2">
+              <Label htmlFor="linkUrl">URL</Label>
+              <Input 
+                id="linkUrl" 
+                placeholder="https://example.com/listing/123" 
+                value={newPropertyLink.url}
+                onChange={(e) => setNewPropertyLink({...newPropertyLink, url: e.target.value})}
+              />
+            </div>
+            <Button 
+              onClick={handleAddPropertyLink} 
+              className="bg-realestate-700 hover:bg-realestate-800 mt-2"
+            >
+              <PlusIcon className="mr-2 h-4 w-4" />
+              Add Link
+            </Button>
+          </div>
+          
+          <div className="border rounded-md p-4">
+            <h3 className="text-sm font-medium mb-2">Existing Property Links</h3>
+            {selectedClient && selectedClient.propertyLinks.length > 0 ? (
+              <div className="space-y-2">
+                {selectedClient.propertyLinks.map((link: any) => (
+                  <div key={link.id} className="flex items-center justify-between p-2 border rounded bg-gray-50">
+                    <div>
+                      <p className="font-medium text-sm">{link.title}</p>
+                      <a 
+                        href={link.url} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="text-xs text-blue-600 hover:underline flex items-center gap-1"
+                      >
+                        {link.url.length > 40 ? `${link.url.substring(0, 40)}...` : link.url}
+                        <LinkIcon className="h-3 w-3" />
+                      </a>
+                    </div>
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      className="h-6 w-6 text-gray-500 hover:text-red-600"
+                      onClick={() => handleDeletePropertyLink(link.id)}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-muted-foreground text-sm">No property links yet.</p>
+            )}
+          </div>
+          
+          <DialogFooter className="mt-4">
+            <DialogClose asChild>
+              <Button type="button" variant="outline">Close</Button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </AppLayout>
   );
 };

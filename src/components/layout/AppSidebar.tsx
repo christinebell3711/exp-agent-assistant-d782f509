@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import { Home, CalendarClock, CheckSquare, Users, Menu, Database } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -18,6 +18,17 @@ import {
 } from '@/components/ui/sidebar';
 
 const AppSidebar = () => {
+  const location = useLocation();
+  
+  // Navigation items with their paths
+  const navItems = [
+    { path: "/", icon: Home, label: "Dashboard" },
+    { path: "/tasks", icon: CheckSquare, label: "Tasks" },
+    { path: "/calendar", icon: CalendarClock, label: "Calendar" },
+    { path: "/clients", icon: Users, label: "Clients" },
+    { path: "/database", icon: Database, label: "Database" }
+  ];
+
   return (
     <Sidebar>
       <SidebarHeader className="px-6 py-4 border-b">
@@ -41,60 +52,21 @@ const AppSidebar = () => {
           <SidebarGroupLabel>Menu</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <NavLink to="/" className={({ isActive }) => 
-                    isActive ? "bg-realestate-700 text-white" : "text-gray-200 hover:bg-gray-700 hover:bg-opacity-50"
-                  }>
-                    <Home className="h-5 w-5" />
-                    <span>Dashboard</span>
-                  </NavLink>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <NavLink to="/tasks" className={({ isActive }) => 
-                    isActive ? "bg-realestate-700 text-white" : "text-gray-200 hover:bg-gray-700 hover:bg-opacity-50"
-                  }>
-                    <CheckSquare className="h-5 w-5" />
-                    <span>Tasks</span>
-                  </NavLink>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <NavLink to="/calendar" className={({ isActive }) => 
-                    isActive ? "bg-realestate-700 text-white" : "text-gray-200 hover:bg-gray-700 hover:bg-opacity-50"
-                  }>
-                    <CalendarClock className="h-5 w-5" />
-                    <span>Calendar</span>
-                  </NavLink>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <NavLink to="/clients" className={({ isActive }) => 
-                    isActive ? "bg-realestate-700 text-white" : "text-gray-200 hover:bg-gray-700 hover:bg-opacity-50"
-                  }>
-                    <Users className="h-5 w-5" />
-                    <span>Clients</span>
-                  </NavLink>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <NavLink to="/database" className={({ isActive }) => 
-                    isActive ? "bg-realestate-700 text-white" : "text-gray-200 hover:bg-gray-700 hover:bg-opacity-50"
-                  }>
-                    <Database className="h-5 w-5" />
-                    <span>Database</span>
-                  </NavLink>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+              {navItems.map((item) => (
+                <SidebarMenuItem key={item.path}>
+                  <SidebarMenuButton asChild>
+                    <NavLink 
+                      to={item.path} 
+                      className={({ isActive }) => 
+                        isActive ? "bg-realestate-700 text-white" : "text-gray-200 hover:bg-gray-700 hover:bg-opacity-50"
+                      }
+                    >
+                      <item.icon className="h-5 w-5" />
+                      <span>{item.label}</span>
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

@@ -2,8 +2,16 @@
 import React from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import { 
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from '@/components/ui/dialog';
 import { MapPin, Video } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
 
 // Demo appointment data
 const appointments = [
@@ -37,6 +45,18 @@ const appointments = [
 ];
 
 const UpcomingAppointments = () => {
+  const handleReschedule = (id: number) => {
+    toast.info(`Rescheduling appointment #${id}`);
+  };
+
+  const handleJoinOrDirections = (appointment: typeof appointments[0]) => {
+    if (appointment.isVideo) {
+      toast.success(`Joining virtual meeting with ${appointment.clientName}`);
+    } else {
+      toast.success(`Getting directions to ${appointment.location}`);
+    }
+  };
+
   return (
     <div className="space-y-4">
       {appointments.map((appointment) => (
@@ -73,23 +93,29 @@ const UpcomingAppointments = () => {
               variant="outline"
               className="h-8 text-xs flex-1"
               size="sm"
+              onClick={() => handleReschedule(appointment.id)}
             >
               Reschedule
             </Button>
             <Button
               className={cn(
                 "h-8 text-xs flex-1",
-                appointment.isVideo 
-                  ? "bg-realestate-700 hover:bg-realestate-800" 
-                  : "bg-realestate-700 hover:bg-realestate-800"
+                "bg-realestate-700 hover:bg-realestate-800"
               )}
               size="sm"
+              onClick={() => handleJoinOrDirections(appointment)}
             >
               {appointment.isVideo ? "Join" : "Directions"}
             </Button>
           </div>
         </div>
       ))}
+
+      {appointments.length === 0 && (
+        <div className="text-center py-6 text-muted-foreground">
+          No appointments scheduled for today
+        </div>
+      )}
     </div>
   );
 };

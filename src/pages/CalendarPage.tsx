@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import AppLayout from '@/components/layout/AppLayout';
 import { Button } from '@/components/ui/button';
 import { 
@@ -8,11 +8,37 @@ import {
 } from '@/components/ui/card';
 import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Dialog, DialogContent, DialogTitle, DialogHeader } from '@/components/ui/dialog';
 import UpcomingAppointments from '@/components/calendar/UpcomingAppointments';
 import { Calendar } from '@/components/ui/calendar';
+import AppointmentForm from '@/components/calendar/AppointmentForm';
+import { format, addMonths, subMonths } from 'date-fns';
+import { toast } from 'sonner';
 
 const CalendarPage = () => {
-  const [date, setDate] = React.useState<Date | undefined>(new Date());
+  const [date, setDate] = useState<Date | undefined>(new Date());
+  const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [activeView, setActiveView] = useState('month');
+
+  const handlePreviousMonth = () => {
+    setCurrentMonth(prev => subMonths(prev, 1));
+  };
+
+  const handleNextMonth = () => {
+    setCurrentMonth(prev => addMonths(prev, 1));
+  };
+
+  const handleNewAppointment = () => {
+    setDialogOpen(true);
+  };
+
+  const handleAppointmentSubmit = (data: any) => {
+    // Here we would normally save the appointment to the database
+    console.log('New appointment data:', data);
+    toast.success('Appointment created successfully!');
+    setDialogOpen(false);
+  };
 
   return (
     <AppLayout>
@@ -24,7 +50,10 @@ const CalendarPage = () => {
               Manage your schedule and appointments
             </p>
           </div>
-          <Button className="bg-realestate-700 hover:bg-realestate-800">
+          <Button 
+            className="bg-realestate-700 hover:bg-realestate-800"
+            onClick={handleNewAppointment}
+          >
             <Plus className="mr-2 h-4 w-4" />
             New Appointment
           </Button>
@@ -35,15 +64,15 @@ const CalendarPage = () => {
             <CardContent className="p-6">
               <div className="flex justify-between items-center mb-4">
                 <div className="flex items-center">
-                  <Button variant="outline" size="icon" className="mr-2">
+                  <Button variant="outline" size="icon" className="mr-2" onClick={handlePreviousMonth}>
                     <ChevronLeft className="h-4 w-4" />
                   </Button>
-                  <h2 className="text-xl font-semibold">April 2025</h2>
-                  <Button variant="outline" size="icon" className="ml-2">
+                  <h2 className="text-xl font-semibold">{format(currentMonth, 'MMMM yyyy')}</h2>
+                  <Button variant="outline" size="icon" className="ml-2" onClick={handleNextMonth}>
                     <ChevronRight className="h-4 w-4" />
                   </Button>
                 </div>
-                <Tabs defaultValue="month">
+                <Tabs defaultValue={activeView} value={activeView} onValueChange={setActiveView}>
                   <TabsList>
                     <TabsTrigger value="day">Day</TabsTrigger>
                     <TabsTrigger value="week">Week</TabsTrigger>
@@ -56,6 +85,8 @@ const CalendarPage = () => {
                 mode="single"
                 selected={date}
                 onSelect={setDate}
+                month={currentMonth}
+                onMonthChange={setCurrentMonth}
                 className="rounded-md border"
               />
             </CardContent>
@@ -69,6 +100,18 @@ const CalendarPage = () => {
           </Card>
         </div>
       </div>
+
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle>Create New Appointment</DialogTitle>
+          </DialogHeader>
+          <AppointmentForm 
+            onSubmit={handleAppointmentSubmit}
+            onCancel={() => setDialogOpen(false)}
+          />
+        </DialogContent>
+      </Dialog>
     </AppLayout>
   );
 };

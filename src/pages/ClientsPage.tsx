@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import AppLayout from '@/components/layout/AppLayout';
 import { Button } from '@/components/ui/button';
 import { 
@@ -20,7 +20,8 @@ import {
   PhoneIcon, 
   PlusIcon, 
   SearchIcon, 
-  UserIcon 
+  UserIcon,
+  X
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -32,6 +33,19 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogClose
+} from "@/components/ui/dialog";
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { toast } from 'sonner';
 
 // Demo client data
 const clients = [
@@ -101,6 +115,31 @@ const getClientTypeBadge = (type: string) => {
 };
 
 const ClientsPage = () => {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [clientType, setClientType] = useState('all');
+  const [isAddClientOpen, setIsAddClientOpen] = useState(false);
+
+  // Filter clients based on search and type
+  const filteredClients = clients.filter(client => {
+    const matchesSearch = client.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         client.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         client.location.toLowerCase().includes(searchQuery.toLowerCase());
+    
+    const matchesType = clientType === 'all' || 
+                       (clientType === 'buyers' && client.type.includes('Buyer')) ||
+                       (clientType === 'sellers' && client.type.includes('Seller'));
+    
+    return matchesSearch && matchesType;
+  });
+
+  const handleAddClient = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    // Here you would normally make an API call to add the client
+    // For this demo, we'll just show a toast notification
+    toast.success("Client added successfully");
+    setIsAddClientOpen(false);
+  };
+
   return (
     <AppLayout>
       <div className="space-y-6 animate-fade-in">
@@ -111,10 +150,69 @@ const ClientsPage = () => {
               Manage your client relationships
             </p>
           </div>
-          <Button className="bg-realestate-700 hover:bg-realestate-800">
-            <PlusIcon className="mr-2 h-4 w-4" />
-            Add Client
-          </Button>
+          <Dialog open={isAddClientOpen} onOpenChange={setIsAddClientOpen}>
+            <DialogTrigger asChild>
+              <Button className="bg-realestate-700 hover:bg-realestate-800">
+                <PlusIcon className="mr-2 h-4 w-4" />
+                Add Client
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[525px]">
+              <DialogHeader>
+                <DialogTitle>Add New Client</DialogTitle>
+                <DialogDescription>
+                  Enter the client information below to add them to your system.
+                </DialogDescription>
+              </DialogHeader>
+              <form onSubmit={handleAddClient}>
+                <div className="grid gap-4 py-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="firstName">First Name</Label>
+                      <Input id="firstName" placeholder="John" required />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="lastName">Last Name</Label>
+                      <Input id="lastName" placeholder="Doe" required />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email</Label>
+                    <Input id="email" type="email" placeholder="john.doe@example.com" required />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="phone">Phone</Label>
+                    <Input id="phone" placeholder="(555) 123-4567" required />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="clientType">Client Type</Label>
+                      <Select defaultValue="buyer">
+                        <SelectTrigger id="clientType">
+                          <SelectValue placeholder="Select Type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="buyer">Buyer</SelectItem>
+                          <SelectItem value="seller">Seller</SelectItem>
+                          <SelectItem value="buyer-seller">Buyer/Seller</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="location">Location</Label>
+                      <Input id="location" placeholder="Chicago, IL" />
+                    </div>
+                  </div>
+                </div>
+                <DialogFooter>
+                  <DialogClose asChild>
+                    <Button type="button" variant="outline">Cancel</Button>
+                  </DialogClose>
+                  <Button type="submit" className="bg-realestate-700 hover:bg-realestate-800">Add Client</Button>
+                </DialogFooter>
+              </form>
+            </DialogContent>
+          </Dialog>
         </div>
 
         <div className="flex flex-col sm:flex-row gap-4">
@@ -123,10 +221,17 @@ const ClientsPage = () => {
             <Input 
               placeholder="Search clients..." 
               className="pl-9" 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
           
-          <Tabs defaultValue="all" className="w-full sm:w-auto">
+          <Tabs 
+            defaultValue="all" 
+            value={clientType} 
+            onValueChange={setClientType}
+            className="w-full sm:w-auto"
+          >
             <TabsList className="grid grid-cols-3 w-full">
               <TabsTrigger value="all">All</TabsTrigger>
               <TabsTrigger value="buyers">Buyers</TabsTrigger>
@@ -142,70 +247,76 @@ const ClientsPage = () => {
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 gap-4">
-              {clients.map((client) => (
-                <div
-                  key={client.id}
-                  className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 border rounded-lg hover:bg-gray-50 transition-colors"
-                >
-                  <div className="flex items-center gap-3">
-                    <Avatar className="h-10 w-10">
-                      <AvatarFallback className="bg-realestate-100 text-realestate-700">
-                        {client.initials}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <h4 className="font-medium text-sm flex items-center gap-2">
-                        {client.name}
-                        {getClientTypeBadge(client.type)}
-                      </h4>
-                      <div className="flex items-center text-xs text-muted-foreground mt-1">
-                        <MapPinIcon className="h-3 w-3 mr-1" />
-                        <span>{client.location}</span>
+              {filteredClients.length > 0 ? (
+                filteredClients.map((client) => (
+                  <div
+                    key={client.id}
+                    className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 border rounded-lg hover:bg-gray-50 transition-colors"
+                  >
+                    <div className="flex items-center gap-3">
+                      <Avatar className="h-10 w-10">
+                        <AvatarFallback className="bg-realestate-100 text-realestate-700">
+                          {client.initials}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <h4 className="font-medium text-sm flex items-center gap-2">
+                          {client.name}
+                          {getClientTypeBadge(client.type)}
+                        </h4>
+                        <div className="flex items-center text-xs text-muted-foreground mt-1">
+                          <MapPinIcon className="h-3 w-3 mr-1" />
+                          <span>{client.location}</span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  
-                  <div className="flex flex-wrap items-center gap-3 sm:gap-4">
-                    <Button variant="outline" size="sm" className="h-8 gap-1">
-                      <PhoneIcon className="h-3 w-3" />
-                      <span className="hidden md:inline">Call</span>
-                    </Button>
-                    <Button variant="outline" size="sm" className="h-8 gap-1">
-                      <MailIcon className="h-3 w-3" />
-                      <span className="hidden md:inline">Email</span>
-                    </Button>
-                    <Button variant="outline" size="sm" className="h-8 gap-1">
-                      <HomeIcon className="h-3 w-3" />
-                      <span className="hidden md:inline">Properties</span>
-                    </Button>
                     
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon" className="h-8 w-8">
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem>
-                          <UserIcon className="h-4 w-4 mr-2" />
-                          View Profile
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                          <BuildingIcon className="h-4 w-4 mr-2" />
-                          View Properties
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem>Edit Client</DropdownMenuItem>
-                        <DropdownMenuItem className="text-destructive">
-                          Archive Client
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                    <div className="flex flex-wrap items-center gap-3 sm:gap-4">
+                      <Button variant="outline" size="sm" className="h-8 gap-1">
+                        <PhoneIcon className="h-3 w-3" />
+                        <span className="hidden md:inline">Call</span>
+                      </Button>
+                      <Button variant="outline" size="sm" className="h-8 gap-1">
+                        <MailIcon className="h-3 w-3" />
+                        <span className="hidden md:inline">Email</span>
+                      </Button>
+                      <Button variant="outline" size="sm" className="h-8 gap-1">
+                        <HomeIcon className="h-3 w-3" />
+                        <span className="hidden md:inline">Properties</span>
+                      </Button>
+                      
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon" className="h-8 w-8">
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem>
+                            <UserIcon className="h-4 w-4 mr-2" />
+                            View Profile
+                          </DropdownMenuItem>
+                          <DropdownMenuItem>
+                            <BuildingIcon className="h-4 w-4 mr-2" />
+                            View Properties
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem>Edit Client</DropdownMenuItem>
+                          <DropdownMenuItem className="text-destructive">
+                            Archive Client
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
                   </div>
+                ))
+              ) : (
+                <div className="text-center py-6">
+                  <p className="text-muted-foreground">No clients found matching your criteria</p>
                 </div>
-              ))}
+              )}
             </div>
           </CardContent>
         </Card>

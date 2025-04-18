@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import AppLayout from '@/components/layout/AppLayout';
 import {
   Card,
@@ -26,8 +26,46 @@ import DashboardStats from '@/components/dashboard/DashboardStats';
 import TaskList from '@/components/tasks/TaskList';
 import UpcomingAppointments from '@/components/calendar/UpcomingAppointments';
 import ClientActivity from '@/components/clients/ClientActivity';
+import { useToast } from '@/hooks/use-toast';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuCheckboxItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 const Index = () => {
+  const { toast } = useToast();
+  const [filterOptions, setFilterOptions] = useState({
+    highPriority: true,
+    mediumPriority: true,
+    lowPriority: true,
+    completed: false
+  });
+
+  // Handle new task button click
+  const handleNewTask = () => {
+    toast({
+      title: "Create Task",
+      description: "New task creation would open here.",
+    });
+  };
+
+  // Handle filter change
+  const handleFilterChange = (key: keyof typeof filterOptions) => {
+    setFilterOptions(prev => ({
+      ...prev,
+      [key]: !prev[key]
+    }));
+    
+    toast({
+      title: "Filter Applied",
+      description: `Tasks filtered by ${key} option.`,
+    });
+  };
+
   return (
     <AppLayout>
       <div className="space-y-6 animate-fade-in">
@@ -39,11 +77,47 @@ const Index = () => {
             </p>
           </div>
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm">
-              <Filter className="mr-2 h-4 w-4" />
-              Filter
-            </Button>
-            <Button className="bg-realestate-700 hover:bg-realestate-800">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm">
+                  <Filter className="mr-2 h-4 w-4" />
+                  Filter
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-40">
+                <DropdownMenuLabel>Filter By</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuCheckboxItem 
+                  checked={filterOptions.highPriority}
+                  onCheckedChange={() => handleFilterChange('highPriority')}
+                >
+                  High Priority
+                </DropdownMenuCheckboxItem>
+                <DropdownMenuCheckboxItem 
+                  checked={filterOptions.mediumPriority}
+                  onCheckedChange={() => handleFilterChange('mediumPriority')}
+                >
+                  Medium Priority
+                </DropdownMenuCheckboxItem>
+                <DropdownMenuCheckboxItem 
+                  checked={filterOptions.lowPriority}
+                  onCheckedChange={() => handleFilterChange('lowPriority')}
+                >
+                  Low Priority
+                </DropdownMenuCheckboxItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuCheckboxItem 
+                  checked={filterOptions.completed}
+                  onCheckedChange={() => handleFilterChange('completed')}
+                >
+                  Completed
+                </DropdownMenuCheckboxItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <Button 
+              className="bg-realestate-700 hover:bg-realestate-800"
+              onClick={handleNewTask}
+            >
               <Plus className="mr-2 h-4 w-4" />
               New Task
             </Button>

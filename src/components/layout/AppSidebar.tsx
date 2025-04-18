@@ -33,11 +33,13 @@ const AppSidebar = () => {
     <Sidebar>
       <SidebarHeader className="px-6 py-4 border-b">
         <div className="flex items-center gap-2">
-          <img 
-            src="/lovable-uploads/3992c810-a229-4a61-a818-d470ed42313d.png" 
-            alt="eXp Realty Logo" 
-            className="h-7 w-auto" 
-          />
+          <NavLink to="/">
+            <img 
+              src="/lovable-uploads/3992c810-a229-4a61-a818-d470ed42313d.png" 
+              alt="eXp Realty Logo" 
+              className="h-7 w-auto" 
+            />
+          </NavLink>
           <span className="text-xl font-bold text-realestate-700">Assistant</span>
         </div>
         <SidebarTrigger>

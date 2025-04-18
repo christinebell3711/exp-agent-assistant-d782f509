@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import AppLayout from '@/components/layout/AppLayout';
 import { Button } from '@/components/ui/button';
@@ -163,6 +164,14 @@ const ClientsPage = () => {
       return;
     }
 
+    // Validate URL format
+    try {
+      new URL(newPropertyLink.url);
+    } catch (e) {
+      toast.error("Please enter a valid URL (including http:// or https://)");
+      return;
+    }
+
     if (selectedClient) {
       const newLink = {
         id: Date.now(),
@@ -175,6 +184,12 @@ const ClientsPage = () => {
           ...clients[clientIndex].propertyLinks,
           newLink
         ];
+        
+        // Update the selected client to reflect changes immediately
+        setSelectedClient({
+          ...selectedClient,
+          propertyLinks: [...selectedClient.propertyLinks, newLink]
+        });
       }
 
       toast.success("Property link added successfully");
@@ -333,13 +348,27 @@ const ClientsPage = () => {
                     
                     <div className="flex flex-wrap items-center gap-3 sm:gap-4">
                       <Button variant="outline" size="sm" className="h-8 gap-1" asChild>
-                        <a href={`tel:${client.phone.replace(/\D/g, '')}`} title={`Call ${client.name}`}>
+                        <a 
+                          href={`tel:${client.phone.replace(/\D/g, '')}`} 
+                          title={`Call ${client.name}`}
+                          onClick={(e) => {
+                            // Prevent default only on desktop to allow mobile devices to handle tel: links
+                            if (!/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                              e.preventDefault();
+                              navigator.clipboard.writeText(client.phone);
+                              toast.success(`Phone number ${client.phone} copied to clipboard`);
+                            }
+                          }}
+                        >
                           <PhoneIcon className="h-3 w-3" />
                           <span className="hidden md:inline">{client.phone}</span>
                         </a>
                       </Button>
                       <Button variant="outline" size="sm" className="h-8 gap-1" asChild>
-                        <a href={`mailto:${client.email}`} title={`Email ${client.name}`}>
+                        <a 
+                          href={`mailto:${client.email}`} 
+                          title={`Email ${client.name}`}
+                        >
                           <MailIcon className="h-3 w-3" />
                           <span className="hidden md:inline">Email</span>
                         </a>

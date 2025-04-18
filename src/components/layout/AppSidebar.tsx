@@ -1,8 +1,8 @@
-
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { Home, CalendarClock, CheckSquare, Users, Menu, Database } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import AgentProfile from '@/components/profile/AgentProfile';
 import {
   Sidebar,
   SidebarContent,
@@ -75,15 +75,12 @@ const AppSidebar = () => {
       </SidebarContent>
       
       <SidebarFooter className="px-6 py-4 border-t">
-        <div className="flex items-center gap-2">
-          <div className="w-10 h-10 rounded-full bg-realestate-700 flex items-center justify-center">
-            <span className="font-medium text-white">JD</span>
-          </div>
-          <div className="flex flex-col">
-            <span className="font-medium text-sm">John Doe</span>
-            <span className="text-xs text-muted-foreground">eXp Realty</span>
-          </div>
-        </div>
+        <AgentProfile
+          name="John Doe"
+          role="eXp Realty"
+          email="john.doe@exp.com"
+          phone="(555) 123-4567"
+        />
       </SidebarFooter>
     </Sidebar>
   );

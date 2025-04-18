@@ -75,12 +75,7 @@ const AppSidebar = () => {
       </SidebarContent>
       
       <SidebarFooter className="px-6 py-4 border-t">
-        <AgentProfile
-          name="John Doe"
-          role="eXp Realty"
-          email="john.doe@exp.com"
-          phone="(555) 123-4567"
-        />
+        <AgentProfile />
       </SidebarFooter>
     </Sidebar>
   );

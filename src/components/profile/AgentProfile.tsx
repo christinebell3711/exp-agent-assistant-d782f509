@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Mail, Phone, PencilIcon, UserCog } from 'lucide-react';
+import { Mail, Phone, PencilIcon, UserCog, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -17,6 +17,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
 
 interface ProfileData {
+  id?: string;
   first_name: string | null;
   last_name: string | null;
   email: string;
@@ -29,37 +30,53 @@ const AgentProfile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
+
+  const defaultProfile: ProfileData = {
+    first_name: 'John',
+    last_name: 'Doe',
+    email: 'john.doe@exp.com',
+    phone: '(555) 123-4567',
+    role: 'Agent',
+    photo_url: null
+  };
 
   const fetchProfile = async () => {
     try {
       setIsLoading(true);
-      const { data: profile, error } = await supabase
+      setError(null);
+      
+      // First check if the profiles table exists by fetching all profiles
+      const { data: profiles, error: checkError } = await supabase
         .from('profiles')
         .select('*')
-        .single();
-
-      if (error) {
-        throw error;
+        .limit(1);
+      
+      if (checkError) {
+        // If there's an error, it might be that the table doesn't exist
+        console.error('Error checking profiles:', checkError);
+        throw checkError;
       }
-
-      setProfile(profile);
-    } catch (error) {
+      
+      // If profiles array is empty, use default profile
+      if (!profiles || profiles.length === 0) {
+        console.log('No profiles found, using default profile');
+        setProfile(defaultProfile);
+      } else {
+        // Get the first profile
+        setProfile(profiles[0]);
+      }
+    } catch (error: any) {
       console.error('Error loading profile:', error);
+      setError('Failed to load profile data');
       toast({
         title: 'Error',
-        description: 'Failed to load profile data.',
+        description: 'Failed to load profile data. Using default profile.',
         variant: 'destructive',
       });
       // Set fallback profile data if unable to fetch
-      setProfile({
-        first_name: 'John',
-        last_name: 'Doe',
-        email: 'john.doe@exp.com',
-        phone: '(555) 123-4567',
-        role: 'Agent',
-        photo_url: null
-      });
+      setProfile(defaultProfile);
     } finally {
       setIsLoading(false);
     }
@@ -68,6 +85,14 @@ const AgentProfile = () => {
   useEffect(() => {
     fetchProfile();
   }, []);
+
+  const handleRefresh = () => {
+    fetchProfile();
+    toast({
+      title: 'Refreshing',
+      description: 'Refreshing profile data...',
+    });
+  };
 
   const renderProfile = () => {
     if (isLoading) {
@@ -86,10 +111,11 @@ const AgentProfile = () => {
 
     if (!profile) {
       return (
-        <div className="flex items-center justify-center p-4">
-          <Button variant="outline" onClick={fetchProfile}>
+        <div className="flex flex-col items-center justify-center p-4 space-y-2">
+          <p className="text-sm text-center text-muted-foreground">{error || 'Could not load profile'}</p>
+          <Button variant="outline" onClick={fetchProfile} size="sm">
             <UserCog className="h-4 w-4 mr-2" />
-            Load Profile
+            Try Again
           </Button>
         </div>
       );
@@ -145,15 +171,24 @@ const AgentProfile = () => {
 
   return (
     <>
-      <Card>
-        <CardHeader className="pb-3">
-          <div className="flex items-center justify-between">
-            <CardTitle>Agent Profile</CardTitle>
+      <Card className="border-sidebar-border bg-sidebar text-sidebar-foreground">
+        <CardHeader className="pb-3 flex flex-row items-center justify-between">
+          <CardTitle>Agent Profile</CardTitle>
+          <div className="flex space-x-1">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleRefresh}
+              className="h-8 w-8 text-sidebar-foreground hover:text-white hover:bg-sidebar-accent/20"
+            >
+              <RefreshCw className="h-4 w-4" />
+              <span className="sr-only">Refresh profile</span>
+            </Button>
             <Button
               variant="ghost"
               size="icon"
               onClick={() => setIsEditing(true)}
-              className="h-8 w-8"
+              className="h-8 w-8 text-sidebar-foreground hover:text-white hover:bg-sidebar-accent/20"
             >
               <PencilIcon className="h-4 w-4" />
               <span className="sr-only">Edit profile</span>

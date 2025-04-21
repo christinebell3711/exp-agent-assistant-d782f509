@@ -87,10 +87,10 @@ const AgentProfile = () => {
     if (isLoading) {
       return (
         <div className="flex items-center space-x-3">
-          <Skeleton className="h-10 w-10 rounded-full" />
-          <div className="space-y-2 flex-1">
-            <Skeleton className="h-3 w-16" />
-            <Skeleton className="h-2 w-14" />
+          <Skeleton className="h-8 w-8 rounded-full" />
+          <div className="space-y-1 flex-1">
+            <Skeleton className="h-2 w-12" />
+            <Skeleton className="h-1.5 w-10" />
           </div>
         </div>
       );
@@ -118,37 +118,38 @@ const AgentProfile = () => {
       : 'A';
 
     return (
-      <div className="flex items-center gap-3">
-        <Avatar className="h-10 w-10">
+      <div className="flex items-center gap-2 min-w-0 w-full">
+        <Avatar className="h-8 w-8 flex-shrink-0">
           {profile.photo_url ? (
             <AvatarImage src={profile.photo_url} alt={name} />
           ) : (
-            <AvatarFallback className="text-sm bg-realestate-700 text-white">{initials}</AvatarFallback>
+            <AvatarFallback className="text-xs bg-realestate-700 text-white">{initials}</AvatarFallback>
           )}
         </Avatar>
-        <div className="flex-1">
-          <div className="flex items-center gap-1">
-            <span className="text-base font-medium truncate">{name || 'Agent'}</span>
-            <Badge variant="secondary" className="text-[10px] py-0.5 px-1 ml-1">{profile.role || 'Agent'}</Badge>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-1 whitespace-nowrap overflow-hidden">
+            <span className="text-sm font-semibold truncate">{name || 'Agent'}</span>
+            <Badge variant="secondary" className="text-[9px] py-0.5 px-1 ml-1 whitespace-nowrap">{profile.role || 'Agent'}</Badge>
           </div>
-          <div className="flex items-center gap-1 mt-0.5">
-            <a 
-              href={`mailto:${profile.email}`} 
-              className="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center"
+          <div className="mt-0.5 flex flex-col text-xs text-muted-foreground break-words min-w-0">
+            <a
+              href={`mailto:${profile.email}`}
+              className="flex items-center hover:text-foreground truncate break-words"
               title={profile.email}
             >
-              <Mail className="h-3 w-3 mr-1" />
+              <Mail className="h-3 w-3 mr-1 flex-shrink-0" />
+              <span className="truncate">{profile.email}</span>
             </a>
             {profile.phone && (
-              <a 
-                href={`tel:${profile.phone}`} 
-                className="text-xs text-muted-foreground hover:text-foreground flex items-center"
+              <a
+                href={`tel:${profile.phone}`}
+                className="flex items-center hover:text-foreground mt-0.5 truncate break-words"
                 title={profile.phone}
               >
-                <Phone className="h-3 w-3 mr-1" />
+                <Phone className="h-3 w-3 mr-1 flex-shrink-0" />
+                <span className="truncate">{profile.phone}</span>
               </a>
             )}
-            <span className="text-xs text-muted-foreground truncate">{profile.email}</span>
           </div>
         </div>
       </div>
@@ -157,7 +158,7 @@ const AgentProfile = () => {
 
   return (
     <>
-      <Card className="border-sidebar-border bg-sidebar text-sidebar-foreground p-2 shadow-none">
+      <Card className="border-sidebar-border bg-sidebar text-sidebar-foreground p-2 shadow-none max-w-[300px]">
         <CardHeader className="flex flex-row items-center justify-between p-2 pb-1">
           <CardTitle className="text-sm font-semibold">Agent</CardTitle>
           <div className="flex space-x-1">
@@ -203,4 +204,3 @@ const AgentProfile = () => {
 };
 
 export default AgentProfile;
-

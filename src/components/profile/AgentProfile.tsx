@@ -46,36 +46,25 @@ const AgentProfile = () => {
     try {
       setIsLoading(true);
       setError(null);
-      
-      // First check if the profiles table exists by fetching all profiles
       const { data: profiles, error: checkError } = await supabase
         .from('profiles')
         .select('*')
         .limit(1);
-      
       if (checkError) {
-        // If there's an error, it might be that the table doesn't exist
-        console.error('Error checking profiles:', checkError);
         throw checkError;
       }
-      
-      // If profiles array is empty, use default profile
       if (!profiles || profiles.length === 0) {
-        console.log('No profiles found, using default profile');
         setProfile(defaultProfile);
       } else {
-        // Get the first profile
         setProfile(profiles[0]);
       }
     } catch (error: any) {
-      console.error('Error loading profile:', error);
       setError('Failed to load profile data');
       toast({
         title: 'Error',
         description: 'Failed to load profile data. Using default profile.',
         variant: 'destructive',
       });
-      // Set fallback profile data if unable to fetch
       setProfile(defaultProfile);
     } finally {
       setIsLoading(false);
@@ -97,13 +86,11 @@ const AgentProfile = () => {
   const renderProfile = () => {
     if (isLoading) {
       return (
-        <div className="flex items-start space-x-4">
-          <Skeleton className="h-16 w-16 rounded-full" />
-          <div className="space-y-3">
-            <Skeleton className="h-4 w-28" />
-            <Skeleton className="h-3 w-20" />
-            <Skeleton className="h-3 w-32" />
-            <Skeleton className="h-3 w-28" />
+        <div className="flex items-center space-x-3">
+          <Skeleton className="h-10 w-10 rounded-full" />
+          <div className="space-y-2 flex-1">
+            <Skeleton className="h-3 w-16" />
+            <Skeleton className="h-2 w-14" />
           </div>
         </div>
       );
@@ -111,10 +98,10 @@ const AgentProfile = () => {
 
     if (!profile) {
       return (
-        <div className="flex flex-col items-center justify-center p-4 space-y-2">
-          <p className="text-sm text-center text-muted-foreground">{error || 'Could not load profile'}</p>
-          <Button variant="outline" onClick={fetchProfile} size="sm">
-            <UserCog className="h-4 w-4 mr-2" />
+        <div className="flex flex-col items-center justify-center p-2 space-y-1">
+          <p className="text-xs text-center text-muted-foreground">{error || 'Could not load profile'}</p>
+          <Button variant="outline" onClick={fetchProfile} size="sm" className="text-xs px-2 py-1">
+            <UserCog className="h-4 w-4 mr-1" />
             Try Again
           </Button>
         </div>
@@ -131,38 +118,37 @@ const AgentProfile = () => {
       : 'A';
 
     return (
-      <div className="flex items-start space-x-4">
-        <Avatar className="h-16 w-16">
+      <div className="flex items-center gap-3">
+        <Avatar className="h-10 w-10">
           {profile.photo_url ? (
             <AvatarImage src={profile.photo_url} alt={name} />
           ) : (
-            <AvatarFallback className="text-lg bg-realestate-700 text-white">{initials}</AvatarFallback>
+            <AvatarFallback className="text-sm bg-realestate-700 text-white">{initials}</AvatarFallback>
           )}
         </Avatar>
-        <div className="space-y-3">
-          <div>
-            <h3 className="text-lg font-semibold">{name || 'Agent'}</h3>
-            <Badge variant="secondary" className="mt-1">
-              {profile.role || 'Agent'}
-            </Badge>
+        <div className="flex-1">
+          <div className="flex items-center gap-1">
+            <span className="text-base font-medium truncate">{name || 'Agent'}</span>
+            <Badge variant="secondary" className="text-[10px] py-0.5 px-1 ml-1">{profile.role || 'Agent'}</Badge>
           </div>
-          <div className="space-y-2 text-sm">
+          <div className="flex items-center gap-1 mt-0.5">
             <a 
               href={`mailto:${profile.email}`} 
-              className="flex items-center text-muted-foreground hover:text-foreground transition-colors"
+              className="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center"
+              title={profile.email}
             >
-              <Mail className="h-4 w-4 mr-2" />
-              {profile.email}
+              <Mail className="h-3 w-3 mr-1" />
             </a>
             {profile.phone && (
               <a 
                 href={`tel:${profile.phone}`} 
-                className="flex items-center text-muted-foreground hover:text-foreground transition-colors"
+                className="text-xs text-muted-foreground hover:text-foreground flex items-center"
+                title={profile.phone}
               >
-                <Phone className="h-4 w-4 mr-2" />
-                {profile.phone}
+                <Phone className="h-3 w-3 mr-1" />
               </a>
             )}
+            <span className="text-xs text-muted-foreground truncate">{profile.email}</span>
           </div>
         </div>
       </div>
@@ -171,31 +157,31 @@ const AgentProfile = () => {
 
   return (
     <>
-      <Card className="border-sidebar-border bg-sidebar text-sidebar-foreground">
-        <CardHeader className="pb-3 flex flex-row items-center justify-between">
-          <CardTitle>Agent Profile</CardTitle>
+      <Card className="border-sidebar-border bg-sidebar text-sidebar-foreground p-2 shadow-none">
+        <CardHeader className="flex flex-row items-center justify-between p-2 pb-1">
+          <CardTitle className="text-sm font-semibold">Agent</CardTitle>
           <div className="flex space-x-1">
             <Button
               variant="ghost"
               size="icon"
               onClick={handleRefresh}
-              className="h-8 w-8 text-sidebar-foreground hover:text-white hover:bg-sidebar-accent/20"
+              className="h-7 w-7 text-sidebar-foreground hover:text-white hover:bg-sidebar-accent/20 p-0"
+              title="Refresh profile"
             >
-              <RefreshCw className="h-4 w-4" />
-              <span className="sr-only">Refresh profile</span>
+              <RefreshCw className="h-3 w-3" />
             </Button>
             <Button
               variant="ghost"
               size="icon"
               onClick={() => setIsEditing(true)}
-              className="h-8 w-8 text-sidebar-foreground hover:text-white hover:bg-sidebar-accent/20"
+              className="h-7 w-7 text-sidebar-foreground hover:text-white hover:bg-sidebar-accent/20 p-0"
+              title="Edit profile"
             >
-              <PencilIcon className="h-4 w-4" />
-              <span className="sr-only">Edit profile</span>
+              <PencilIcon className="h-3 w-3" />
             </Button>
           </div>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-2">
           {renderProfile()}
         </CardContent>
       </Card>
@@ -217,3 +203,4 @@ const AgentProfile = () => {
 };
 
 export default AgentProfile;
+

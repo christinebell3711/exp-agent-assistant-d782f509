@@ -128,7 +128,7 @@ const AgentProfile = () => {
         </Avatar>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1 whitespace-nowrap overflow-hidden">
-            <span className="text-sm font-semibold truncate">{name || 'Agent'}</span>
+            <span className="text-sm font-semibold truncate">{name || ''}</span>
             <Badge variant="secondary" className="text-[9px] py-0.5 px-1 ml-1 whitespace-nowrap">{profile.role || 'Agent'}</Badge>
           </div>
           <div className="mt-0.5 flex flex-col text-xs text-muted-foreground break-words min-w-0">
@@ -204,3 +204,4 @@ const AgentProfile = () => {
 };
 
 export default AgentProfile;
+
